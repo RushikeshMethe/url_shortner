@@ -1,4 +1,6 @@
 package com.example.urlshortener.entity;
+import java.time.Instant;
+
 import jakarta.persistence.*;
 
 @Entity 
@@ -6,10 +8,11 @@ import jakarta.persistence.*;
 public class ShortenedUrl {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "orignal_url", nullable = false)
-    private String original_irl;
+    @Column(name = "original_url", nullable = false)
+    private String originalUrl;
 
-    
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt; 
 }
