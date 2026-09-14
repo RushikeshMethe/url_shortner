@@ -1,6 +1,5 @@
 package com.example.urlshortener.entity;
 import java.time.Instant;
-
 import jakarta.persistence.*;
 
 @Entity 
@@ -15,4 +14,27 @@ public class ShortenedUrl {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt; 
+
+     public ShortenedUrl() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 }

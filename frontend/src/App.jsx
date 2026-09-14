@@ -1,122 +1,286 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [url, setUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setCopied(false);
+
+    if (!url.trim()) {
+      setError("Please enter a URL.");
+      return;
+    }
+
+    try {
+      new URL(url);
+    } catch {
+      setError("Please enter a valid URL.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      /*
+       * Connect this to your Spring Boot API:
+       *
+       * const response = await fetch(
+       *   "http://localhost:8080/api/v1/urls",
+       *   {
+       *     method: "POST",
+       *     headers: {
+       *       "Content-Type": "application/json",
+       *     },
+       *     body: JSON.stringify({ url }),
+       *   }
+       * );
+       *
+       * const data = await response.json();
+       * setShortUrl(data.shortUrl);
+       */
+
+      // Temporary value until backend is connected
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setShortUrl("http://localhost:8080/aB3xY7");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app">
+
+      {/* Header */}
+      <header className="header">
+        <div className="header-inner">
+          <a href="/" className="logo">
+            Shortly
+          </a>
+
+          <nav className="nav">
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <button className="login-button">
+              Sign in
+            </button>
+          </nav>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+      </header>
+
+      {/* Main */}
+      <main>
+
+        {/* Hero */}
+        <section className="hero">
+          <div className="hero-content">
+
+            <div className="badge">
+              Simple link sharing
+            </div>
+
+            <h1>
+              Short links.
+              <br />
+              <span>Simple sharing.</span>
+            </h1>
+
+            <p className="hero-description">
+              Turn long URLs into short, easy-to-share links
+              in seconds.
+            </p>
+
+            {/* URL Form */}
+            <form
+              className="shortener-form"
+              onSubmit={handleSubmit}
+            >
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Paste your long URL here..."
+                  disabled={loading}
+                />
+
+                {error && (
+                  <p className="error">
+                    {error}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="shorten-button"
+                disabled={loading}
+              >
+                {loading ? "Shortening..." : "Shorten URL"}
+              </button>
+            </form>
+
+            <div className="trust-points">
+              <span>✓ Fast</span>
+              <span>✓ Easy to share</span>
+              <span>✓ Free to start</span>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Result */}
+        {shortUrl && (
+          <section className="result-section">
+            <div className="result-card">
+
+              <div className="result-header">
+                <div>
+                  <p className="result-label">
+                    Your shortened URL
+                  </p>
+
+                  <a
+                    href={shortUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="short-url"
+                  >
+                    {shortUrl}
+                  </a>
+                </div>
+
+                <button
+                  className="copy-button"
+                  onClick={handleCopy}
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {/* Features */}
+        <section
+          className="features"
+          id="features"
         >
-          Count is {count}
-        </button>
-      </section>
+          <div className="section-heading">
+            <p className="eyebrow">
+              WHY SHORTLY
+            </p>
 
-      <div className="ticks"></div>
+            <h2>
+              Everything you need to share links.
+            </h2>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <div className="feature-grid">
+
+            <div className="feature-card">
+              <div className="feature-icon">
+                ↗
+              </div>
+
+              <h3>
+                Short & shareable
+              </h3>
+
+              <p>
+                Create clean, compact links that are
+                easier to share anywhere.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">
+                ⚡
+              </div>
+
+              <h3>
+                Fast redirects
+              </h3>
+
+              <p>
+                Quickly redirect visitors to the
+                original destination.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">
+                ◷
+              </div>
+
+              <h3>
+                Built to grow
+              </h3>
+
+              <p>
+                Analytics, custom links and more can
+                be added as Shortly evolves.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Simple CTA */}
+        <section
+          className="bottom-cta"
+          id="about"
+        >
+          <h2>
+            Make your links easier to share.
+          </h2>
+
+          <p>
+            Paste a URL above and create your first
+            short link.
+          </p>
+
+          <a href="#" className="cta-link">
+            Shorten a URL →
+          </a>
+        </section>
+
+      </main>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-inner">
+          <span>© 2026 Shortly</span>
+
+          <div>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </footer>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
